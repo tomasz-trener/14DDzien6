@@ -1,4 +1,5 @@
 ﻿using P01AplikacjaZawodnicy.Domain;
+using P01AplikacjaZawodnicy.ViewModels;
 using P04BibliotekaPolaczenieZBaza;
 using System;
 using System.Collections.Generic;
@@ -9,18 +10,21 @@ using System.Threading.Tasks;
 
 namespace P01AplikacjaZawodnicy.Repositories
 {
+    //http://github.com/tomasz-trener/14DDzien6
+    //przerwa 13:40
     internal class ZawodnicyRepository
     {
 
-        public Zawodnik[] PobierzZawodnikow()
+        public ZawodnicyResultVM PobierzZawodnikow(int strona)
         {
-            PolaczenieZBaza pzb = new PolaczenieZBaza();
+            return Szukaj("", strona);
+            //PolaczenieZBaza pzb = new PolaczenieZBaza();
 
-            string sql = "SELECT id_zawodnika, id_trenera, imie, nazwisko, kraj, data_ur, wzrost,waga FROM zawodnicy";
+            //string sql = "SELECT id_zawodnika, id_trenera, imie, nazwisko, kraj, data_ur, wzrost,waga FROM zawodnicy";
 
-            object[][] wynik = pzb.WykonajPolecenieSQL(sql);
+            //object[][] wynik = pzb.WykonajPolecenieSQL(sql);
 
-            return transformujNaZawodnikow(wynik);
+            //return transformujNaZawodnikow(wynik);
         }
 
         private Zawodnik[] transformujNaZawodnikow(object[][] dane)
@@ -65,6 +69,42 @@ namespace P01AplikacjaZawodnicy.Repositories
             return sqlParameters;
         }
 
+        internal ZawodnicyResultVM Szukaj(string text, int strona)
+        {
+            PolaczenieZBaza pzb = new PolaczenieZBaza();
+            SqlParameter[] sqlParameters = new SqlParameter[]
+            {
+                new SqlParameter()
+                {
+                    ParameterName = "@dane",
+                    Value = text,
+                    SqlDbType = System.Data.SqlDbType.VarChar
+                },
+                 new SqlParameter()
+                {
+                    ParameterName = "@ile",
+                    Value = 3,
+                    SqlDbType = System.Data.SqlDbType.Int
+                },
+                   new SqlParameter()
+                {
+                    ParameterName = "@strona",
+                    Value = strona,
+                    SqlDbType = System.Data.SqlDbType.Int
+                },
+            };
+
+            WynikRozbudowany wynikRozbudowany = pzb.WykonajPolecenieSQLZLiczbaStron("Szukaj",
+                sqlParameters,
+                System.Data.CommandType.StoredProcedure);
+
+            return new ZawodnicyResultVM()
+            {
+                Zawodnicy = transformujNaZawodnikow(wynikRozbudowany.Wynik),
+                LiczbaStron = wynikRozbudowany.LiczbaStron
+            };
+        }
+
         internal void Edytuj(Zawodnik zaznaczony)
         {
             PolaczenieZBaza pzb = new PolaczenieZBaza();
@@ -88,6 +128,20 @@ namespace P01AplikacjaZawodnicy.Repositories
 
             pzb.WykonajPolecenieSQL(sql, sqlParameters.ToArray());
 
+        }
+
+        internal void Usun(Zawodnik zaznaczony)
+        {
+            string sql = "delete zawodnicy where id_zawodnika=@id";
+
+            SqlParameter sqlParameter = new SqlParameter()
+            {
+                ParameterName = "@id",
+                Value = zaznaczony.Id_zawodnika,
+                SqlDbType = System.Data.SqlDbType.Int
+            };
+            PolaczenieZBaza pzb = new PolaczenieZBaza();
+            pzb.WykonajPolecenieSQL(sql, new SqlParameter[] { sqlParameter });
         }
 
         internal void Dodaj(Zawodnik zaznaczony)

@@ -52,7 +52,7 @@ namespace P01AplikacjaZawodnicy
             dtpDataUr.Value = zaznaczony.DataUrodzenia;
             numWaga.Value = zaznaczony.Waga;
             numWzrost.Value = zaznaczony.Wzrost;
-
+            btnUsun.Visible = true;
         }
 
       
@@ -83,6 +83,20 @@ namespace P01AplikacjaZawodnicy
             zaznaczony.DataUrodzenia = dtpDataUr.Value;
             zaznaczony.Wzrost = Convert.ToInt32(numWzrost.Value);
             zaznaczony.Waga = Convert.ToInt32(numWaga.Value);
+        }
+
+        private void btnUsun_Click(object sender, EventArgs e)
+        {
+            DialogResult dr= MessageBox.Show("Czy na pewno chcesz usunac zawodnika?", "Potwierdzenie", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+
+            if (dr == DialogResult.Yes)
+            {
+                ZawodnicyRepository zr = new ZawodnicyRepository();
+                zr.Usun(zaznaczony);
+                frmZawodnicy.Odswiez();
+                this.Close();
+            }
+           
         }
     }
 }
