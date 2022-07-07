@@ -60,7 +60,7 @@ namespace P01AplikacjaZawodnicy
         private void Szukaj()
         {
             if (txtSzukaj.Text.Length > 2)
-            {
+            { 
                 ZawodnicyRepository zr = new ZawodnicyRepository();
                 ZawodnicyResultVM resultVM = zr.Szukaj(txtSzukaj.Text, Convert.ToInt32(txtStrona.Text));
                 ZbindujDaneZawodnikow(resultVM.Zawodnicy);
