@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace P01AplikacjaZawodnicy.Repositories
 {
-    //http://github.com/tomasz-trener/14DDzien6
+    //http://github.com/tomasz-trener/14DDzien6 
     //przerwa 13:40
     internal class ZawodnicyRepository
     {

@@ -101,5 +101,8 @@
   <ItemGroup>
     <None Include="Resources\arrowRight.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="SQLQuery2.sql" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
